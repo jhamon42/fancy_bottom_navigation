@@ -22,10 +22,11 @@ class FancyBottomNavigation extends StatefulWidget {
       this.activeIconColor,
       this.inactiveIconColor,
       this.textColor,
-      this.barBackgroundColor})
+      this.barBackgroundColor,
+			this.controller})
       : assert(onTabChangedListener != null),
         assert(tabs != null),
-        assert(tabs.length > 1 && tabs.length < 5);
+        assert(tabs.length > 1 && tabs.length < 6);
 
   final Function(int position) onTabChangedListener;
   final Color circleColor;
@@ -35,6 +36,7 @@ class FancyBottomNavigation extends StatefulWidget {
   final Color barBackgroundColor;
   final List<TabData> tabs;
   final int initialSelection;
+	final TabController controller;
 
   final Key key;
 
@@ -96,6 +98,14 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
   void initState() {
     super.initState();
     _setSelected(widget.tabs[widget.initialSelection].key);
+		if (widget.controller != null) {
+      widget.controller.addListener(() {
+        if (widget.controller.animation != null) {
+          _setSelected(widget.tabs[widget.controller.index].key);
+          _initAnimationAndStart(_circleAlignX, 1);
+        }
+      });
+    }
   }
 
   _setSelected(UniqueKey key) {
